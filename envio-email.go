@@ -28,11 +28,12 @@ func main() {
 
 	switch tipoEnvio {
 	case 1:
-		enviaEmail(assunto, destinatario, mensagem)
+		enviaEmail(assunto, destinatario, mensagem, nil)
 	case 2:
-		go enviaEmail(assunto, destinatario, mensagem)
-		fmt.Println("Envio de email agendado")
-		fmt.Scanln(&mensagem)
+		resultMessage := make(chan string)
+		go enviaEmail(assunto, destinatario, mensagem, resultMessage)
+		sendResult := <-resultMessage
+		fmt.Println(sendResult)
 	default:
 		fmt.Println("Tipo de envio desconhecido")
 		os.Exit(-1)
@@ -40,13 +41,13 @@ func main() {
 
 }
 
-func enviaEmail(assunto string, destinatario string, mensagem string) {
+func enviaEmail(assunto string, destinatario string, mensagem string, resultChain chan string) {
 
-	remetente := ".....@gmail.com"
+	remetente := "####@gmail.com"
 
 	auth := smtp.PlainAuth("",
-		".....@gmail.com",
-		"##############",
+		"#####@gmail.com",
+		"####",
 		"smtp.gmail.com",
 	)
 
@@ -64,6 +65,10 @@ func enviaEmail(assunto string, destinatario string, mensagem string) {
 		return
 	}
 
-	fmt.Printf("email enviado com sucesso")
+	if resultChain != nil {
+		resultChain <- "email enviado com sucesso"
+	} else {
+		fmt.Printf("email enviado com sucesso")
+	}
 
 }
