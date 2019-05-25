@@ -35,7 +35,7 @@ func main() {
 		sendResult := <-resultMessage
 		fmt.Println(sendResult)
 	default:
-		fmt.Println("Tipo de envio desconhecido")
+		fmt.Println("Tipo de envio de email inválido")
 		os.Exit(-1)
 	}
 
